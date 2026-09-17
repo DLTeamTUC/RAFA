@@ -1,0 +1,62 @@
+# =========================
+# Datasets
+# =========================
+data/*
+!data/README.md
+!data/.gitkeep
+
+# Common dataset formats
+*.csv
+*.parquet
+*.feather
+
+# =========================
+# Generated experiment artifacts
+# =========================
+results_gpt/
+*.pt
+*.pth
+*.ckpt
+*.pkl
+*.pickle
+
+# =========================
+# Python
+# =========================
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints/
+
+# =========================
+# IDE / editor
+# =========================
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# OS
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Logs / temporary files
+# =========================
+*.log
+*.tmp
+*.bak
+~$*
