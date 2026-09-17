@@ -1,0 +1,153 @@
+# Exact experiment configuration for the main CICIoT2023 evaluation
+# used by the RAFA NoF 2026 paper.
+#
+# Note:
+# The original development notebook called the untargeted experiment "S1"
+# and the reconstruction-targeted experiment "S2".
+# The camera-ready paper uses the opposite paper-facing order:
+# S1 = reconstruction-targeted, S2 = untargeted.
+
+dataset:
+  name: CICIoT2023
+  path: data/CICIoT2023.csv
+  label_column: Label
+  expected_features: 46
+
+reproducibility:
+  # Main paper experiments inherited the notebook's global seed.
+  seed: 42
+
+federated:
+  n_clients: 10
+  rounds: 20
+  local_epochs: 5
+  max_local_batches: 20
+  batch_size: 256
+  learning_rate: 0.001
+
+model:
+  type: VAE
+  latent_dim: 16
+  dropout: 0.2
+
+rafa:
+  alpha: 15.0
+  m_rec: 0.01
+  tau: 0.2
+  epsilon: 1.0e-8
+
+reference:
+  default_size: 500
+  trusted_benign_only: true
+
+evaluation:
+  threshold_percentile: 95
+
+aggregators:
+  - RAFA
+  - FedAvg
+  - FedAvgM
+  - Krum
+  - TrimMean
+  - DnC
+  - FLTrust-AE
+
+experiments:
+
+  # Paper S1 / Table II
+  reconstruction_targeted:
+    partition: iid
+    attack: recon_inflation
+    attack_scales:
+      - 1.0
+      - 2.0
+      - 5.0
+    byzantine_fractions:
+      - 0.2
+      - 0.4
+    match_honest_update_norm: true
+
+  # Paper S2 / Table III
+  untargeted:
+    partition: iid
+    attacks:
+      - noise
+      - sign_flip
+    byzantine_fractions:
+      - 0.1
+      - 0.2
+      - 0.3
+      - 0.4
+    random_noise:
+      match_honest_update_norm: true
+    sign_flip:
+      eta: 5.0
+
+  # Paper S3 / Table IV
+  adaptive:
+    partition: iid
+    variants:
+      - adaptive_score
+      - adaptive_reference
+    attack_scales:
+      - 1.0
+      - 2.0
+    byzantine_fractions:
+      - 0.2
+      - 0.4
+    match_honest_update_norm: true
+
+  # Paper S4 / Table V
+  non_iid_benign:
+    partition: noniid
+    attack: none
+    n_byzantine: 0
+
+  # Sensitivity analysis reported in the paper.
+  alpha_sensitivity:
+    alpha_values:
+      - 10.0
+      - 15.0
+    fixed_m_rec: 0.01
+    fixed_tau: 0.2
+
+  # Final reference-set-size sensitivity experiment.
+  reference_size_sensitivity:
+    partition: iid
+    reference_sizes:
+      - 100
+      - 250
+      - 500
+      - 1000
+    seeds:
+      - 11
+      - 22
+      - 33
+    attack: recon_inflation
+    attack_scale: 5.0
+    byzantine_fraction: 0.4
+    alpha: 15.0
+    m_rec: 0.01
+    tau: 0.2
+    rounds: 20
+    max_local_batches: 20
+
+  # Adapted reconstruction/update-space baseline comparison.
+  # This is NOT a faithful implementation of the original FedREDefense method.
+  adapted_baseline_comparison:
+    seeds:
+      - 11
+      - 22
+      - 33
+    byzantine_fraction: 0.4
+    scenarios:
+      reconstruction_targeted:
+        attack: recon_inflation
+        attack_scale: 5.0
+      sign_flip:
+        attack: sign_flip
+        eta: 5.0
+    methods:
+      - RAFA
+      - Zeno-RE
+      - FedREDefense-style

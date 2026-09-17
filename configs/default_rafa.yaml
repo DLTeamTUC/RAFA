@@ -1,0 +1,84 @@
+# RAFA default configuration
+# Nominal/default settings for the public implementation.
+# Paper-specific experiment grids are defined in the other YAML files.
+
+project:
+  name: RAFA
+  results_dir: results
+
+reproducibility:
+  seed: 42
+
+device:
+  mode: auto  # auto | cpu | cuda
+
+federated:
+  n_clients: 10
+  rounds: 20
+  local_epochs: 5
+
+  # IMPORTANT:
+  # The paper-producing implementation stopped each client's local training
+  # after at most 20 batches in each federated round.
+  max_local_batches: 20
+
+  batch_size: 256
+  learning_rate: 0.001
+
+model:
+  type: VAE
+  latent_dim: 16
+  dropout: 0.2
+
+rafa:
+  # Reconstruction-only AQS used by the paper.
+  alpha: 15.0
+  m_rec: 0.01
+  tau: 0.2
+  epsilon: 1.0e-8
+
+reference:
+  size: 500
+  trusted_benign_only: true
+
+evaluation:
+  threshold_percentile: 95
+  metrics:
+    - f1
+    - auc
+    - fpr
+    - asr
+    - mdr
+    - bfrr
+    - aqs_gap
+
+aggregators:
+  - RAFA
+  - FedAvg
+  - FedAvgM
+  - Krum
+  - TrimMean
+  - DnC
+  - FLTrust-AE
+
+attacks:
+  random_noise:
+    enabled: true
+    match_honest_update_norm: true
+
+  sign_flip:
+    enabled: true
+    eta: 5.0
+
+  reconstruction_targeted:
+    enabled: true
+    name: recon_inflation
+    match_honest_update_norm: true
+
+  adaptive_score:
+    enabled: true
+    match_honest_update_norm: true
+
+  adaptive_reference:
+    enabled: true
+    match_honest_update_norm: true

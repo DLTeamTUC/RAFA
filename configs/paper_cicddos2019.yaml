@@ -1,0 +1,115 @@
+# Exact cross-dataset configuration for the CICDDoS2019 experiments
+# used by the RAFA NoF 2026 paper.
+#
+# IMPORTANT:
+# The final paper-producing notebook used source-specific RAFA settings for
+# the selected CICDDoS2019 subsets. These are preserved here for
+# reproducibility and should not be interpreted as the universal RAFA default.
+
+dataset:
+  name: CICDDoS2019
+  root: data/CICDDoS2019
+
+reproducibility:
+  seeds:
+    - 11
+    - 22
+    - 33
+
+federated:
+  n_clients: 10
+  rounds: 20
+  local_epochs: 5
+  max_local_batches: 20
+  batch_size: 256
+  learning_rate: 0.001
+
+model:
+  type: VAE
+  latent_dim: 16
+  dropout: 0.2
+
+reference:
+  size: 500
+  trusted_benign_only: true
+
+evaluation:
+  threshold_percentile: 95
+  macro_average_across_selected_subsets: true
+
+# Nominal RAFA default retained for reference.
+rafa_default:
+  alpha: 15.0
+  m_rec: 0.01
+  tau: 0.2
+  epsilon: 1.0e-8
+
+# Source-specific settings actually used by the final cross-dataset runs.
+selected_subsets:
+
+  MSSQL:
+    file: MSSQL.csv
+    dataset_id: CICDDoS2019_MSSQL
+    attack_family: MSSQL
+    rafa:
+      config_name: strict_threshold
+      alpha: 15.0
+      m_rec: 0.01
+      tau: 0.3
+
+  DrDoS_DNS:
+    file: DrDoS_DNS.csv
+    dataset_id: CICDDoS2019_DrDoS_DNS
+    attack_family: DNS
+    rafa:
+      config_name: high_sensitivity
+      alpha: 20.0
+      m_rec: 0.01
+      tau: 0.2
+
+experiments:
+
+  # Paper cross-dataset comparison / Table VI.
+  matched_robustness_comparison:
+    byzantine_fraction: 0.4
+
+    reconstruction_targeted:
+      attack: recon_inflation
+      attack_scale: 5.0
+      baselines:
+        - FedAvg
+        - Krum
+        - FLTrust-AE
+
+    sign_flip:
+      attack: sign_flip
+      eta: 5.0
+      baselines:
+        - FedAvg
+        - FedAvgM
+        - Krum
+
+  # Paper adapted baseline comparison / Table VII.
+  adapted_reconstruction_baselines:
+    byzantine_fraction: 0.4
+    scenarios:
+      reconstruction_targeted:
+        attack: recon_inflation
+        attack_scale: 5.0
+      sign_flip:
+        attack: sign_flip
+        eta: 5.0
+
+    methods:
+      - RAFA
+      - Zeno-RE
+      - FedREDefense-style
+
+    notes:
+      zeno_re: >
+        Reconstruction-compatible validation adaptation used in the
+        development notebook; not a faithful asynchronous Zeno++ implementation.
+      fedredefense_style: >
+        Update-space reconstruction/outlier proxy adaptation used for the
+        paper comparison; not a faithful implementation of the original
+        FedREDefense method.
