@@ -1,0 +1,15 @@
+# Core dependencies for the RAFA paper reproduction artifact.
+# Versions are intentionally left unpinned until the clean-environment
+# reproduction test is completed. Pin the validated versions before
+# creating the final public release.
+
+numpy
+pandas
+torch
+scikit-learn
+matplotlib
+seaborn
+PyYAML
+jupyter
+notebook
+ipykernel

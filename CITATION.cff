@@ -1,0 +1,33 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the corresponding NoF 2026 paper."
+title: "RAFA: Reconstruction-Aware Federated Aggregation for Unsupervised Reconstruction-Based Intrusion Detection Systems"
+type: software
+authors:
+  - family-names: "Nugraha"
+    given-names: "Beny"
+  - family-names: "Bauschert"
+    given-names: "Thomas"
+year: 2026
+repository-code: "https://github.com/DLTeamTUC/RAFA"
+license: MIT
+keywords:
+  - federated learning
+  - Byzantine robustness
+  - intrusion detection
+  - autoencoder
+  - variational autoencoder
+  - anomaly detection
+  - network security
+  - robust aggregation
+  - PyTorch
+preferred-citation:
+  type: conference-paper
+  title: "RAFA: Reconstruction-Aware Federated Aggregation for Unsupervised Reconstruction-Based Intrusion Detection Systems"
+  authors:
+    - family-names: "Nugraha"
+      given-names: "Beny"
+    - family-names: "Bauschert"
+      given-names: "Thomas"
+  year: 2026
+  conference:
+    name: "International Conference on Network of the Future (NoF 2026)"
